@@ -1,17 +1,18 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { get } from '../api'
+import type { TourDetail } from '@utpost/shared'
 
 const route = useRoute()
-const tour = ref(null)
-const error = ref(null)
+const tour = ref<TourDetail | null>(null)
+const error = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    tour.value = await get(`/tours/${route.params.id}`)
+    tour.value = await get<TourDetail>(`/tours/${route.params.id}`)
   } catch (err) {
-    error.value = err.message
+    error.value = (err as Error).message
   }
 })
 
@@ -24,7 +25,7 @@ const climb = computed(() =>
   }, 0),
 )
 
-const time = (iso) => new Date(iso).toLocaleTimeString('sv-SE')
+const time = (iso: string) => new Date(iso).toLocaleTimeString('sv-SE')
 </script>
 
 <template>
